@@ -15,4 +15,6 @@
     <string name="title_send">Send</string>
     <string name="title_android_studio">Android Studio</string>
     <string name="title_android_studio_android_com">android.studio@android.com</string>
+    <string name="speech_prompt">Скажите что-нибудь</string>
+    <string name="error_speech_not_supported">Распознавание речи не поддерживается</string>
 </resources>
