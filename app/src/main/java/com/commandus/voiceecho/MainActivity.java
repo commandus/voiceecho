@@ -6,8 +6,8 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -18,7 +18,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.commandus.voiceecho.R;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -33,10 +32,10 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabVoice);
+        FloatingActionButton fab = findViewById(R.id.fabVoice);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -46,13 +45,13 @@ public class MainActivity extends AppCompatActivity
 
         mTTS = new TextToSpeech(this, this);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
@@ -64,7 +63,7 @@ public class MainActivity extends AppCompatActivity
      * @param language language identifier e.g. "en"
      * @return true if TTS ie enabled
      */
-    public boolean say(String value, String language) {
+    private void say(String value, String language) {
         if (mTTS != null) {
             Locale loc = new Locale(language);
             mTTS.setLanguage(loc);
@@ -78,18 +77,17 @@ public class MainActivity extends AppCompatActivity
                 alarm.put(TextToSpeech.Engine.KEY_PARAM_STREAM, String.valueOf(AudioManager.STREAM_ALARM));
                 mTTS.speak(value, TextToSpeech.QUEUE_ADD, alarm);
             }
-            return true;
+            return;
         }
         // missing data, install it
         installTTS(this);
-        return false;
     }
 
     /**
      * Show dialog to install TTS
-     * @param context	Application context
+     * @param context    Application context
      */
-    public static void installTTS(Context context) {
+    private static void installTTS(Context context) {
         // missing data, install it
         Intent installIntent = new Intent();
         installIntent.setAction(
@@ -114,7 +112,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onDestroy() {
-        // TextToSpeech
+        super.onDestroy();
         if (mTTS != null) {
             mTTS.shutdown();
             mTTS = null;
@@ -123,7 +121,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -153,9 +151,8 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -174,7 +171,7 @@ public class MainActivity extends AppCompatActivity
             installTTS(this);
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
